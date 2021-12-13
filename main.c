@@ -1,3 +1,6 @@
+#include <string.h>
+#include <malloc.h>
+#include <stdlib.h>
 #include "stdio.h"
 
 
@@ -15,7 +18,11 @@ void getSentence(char *sentence);
 
 void addToGimatricSum(char c);
 
+void printSameValueWords(char *sentence);
+
 char toUpper(char c);
+
+int isChar(char c);
 
 int checkChar(char c) {
     if (c == '\t' || c == '\n' || c == ' ') {
@@ -44,6 +51,39 @@ void getWord(char *word) {
     }
 }
 
+void printSameValueWords(char *sentence) {
+    size_t len = strlen(sentence);
+    int startIndex = 0;
+    int endIndex;
+    int currSum = 0;
+    for (int i = 0; i < len; ++i) {
+        char currChar = sentence[i];
+        if (checkChar(currChar) && isChar(currChar)) {
+            currSum += toUpper(currChar) - GIMATRIC_START_VAL;
+        }
+        else {
+            endIndex = i -1;
+            if (currSum == gimatric_word_sum) {
+                while (startIndex <= endIndex) {
+                    printf("%c",sentence[startIndex]);
+                    startIndex++;
+                }
+                printf(" ");
+            }
+            startIndex = i + 1;
+            currSum = 0;
+        }
+    }
+
+}
+
+int isChar(char c) {
+    if ((c >= 'A') & (c <='Z' )||( c>= 'a') &( c<='z')) {
+        return 1;
+    }
+    return 0;
+}
+
 char toUpper(char c) {
     if (c >= 'a' && c <= 'z') {
         return c - 'a' + 'A';
@@ -64,7 +104,9 @@ void getSentence(char *sentence) {
 }
 
 void addToGimatricSum(char c) {
-    gimatric_word_sum += toUpper(c) - GIMATRIC_START_VAL;
+    if (isChar(c)) {
+        gimatric_word_sum += toUpper(c) - GIMATRIC_START_VAL;
+    }
 }
 
 int main() {
@@ -73,12 +115,13 @@ int main() {
 
     getWord(word);
     getSentence(sentence);
-    printf("\n");
-    printf("%s", word);
-    printf("\n");
-    printf("%s", sentence);
-    printf("\n");
-    printf("%d", gimatric_word_sum);
+//    printf("\n");
+//    printf("%s", word);
+//    printf("\n");
+//    printf("%s", sentence);
+//    printf("\n");
+//    printf("%d", gimatric_word_sum);
+    printSameValueWords(sentence);
 
     return 1;
 }
