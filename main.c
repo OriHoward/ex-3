@@ -6,19 +6,24 @@
 #define TXT 1024
 #define WORD 30
 
-char *sentenceP;
-char *wordP;
-
 int checkChar(char c);
 
-void getWord();
+void getWord(char *word);
+
+void getSentence(char *sentence);
 
 int checkChar(char c) {
     if (c == '\t' || c == '\n' || c == ' ') {
         return 0;
     }
     return 1;
+}
 
+int checkSentence(char c) {
+    if (c == '-') {
+        return 0;
+    }
+    return 1;
 }
 
 void getWord(char *word) {
@@ -33,12 +38,27 @@ void getWord(char *word) {
     }
 }
 
+void getSentence(char *sentence) {
+    char curChar = getchar();
+    for (int i = 0; i < TXT; ++i) {
+        if (checkSentence(curChar)) {
+            sentence[i] = curChar;
+        } else {
+            return;
+        }
+        curChar = getchar();
+    }
+}
+
 int main() {
     char word[WORD];
-//    char sentence[1024];
+    char sentence[TXT];
 
     getWord(word);
-    printf("%s",word);
+    getSentence(sentence);
+    printf("%s", word);
+    printf("\n");
+    printf("%s", sentence);
 
     return 1;
 }
