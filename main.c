@@ -1,7 +1,7 @@
 #include <string.h>
-#include <malloc.h>
 #include <stdlib.h>
 #include "stdio.h"
+#include <ctype.h>
 
 
 #define TXT 1024
@@ -19,10 +19,6 @@ void getSentence(char *sentence);
 void addToGimatricSum(char c);
 
 void printSameValueWords(char *sentence);
-
-char toUpper(char c);
-
-int isChar(char c);
 
 int checkChar(char c) {
     if (c == '\t' || c == '\n' || c == ' ') {
@@ -58,8 +54,8 @@ void printSameValueWords(char *sentence) {
     int currSum = 0;
     for (int i = 0; i < len; ++i) {
         char currChar = sentence[i];
-        if (checkChar(currChar) && isChar(currChar)) {
-            currSum += toUpper(currChar) - GIMATRIC_START_VAL;
+        if (checkChar(currChar) && isalnum(currChar)) {
+            currSum += toupper(currChar) - GIMATRIC_START_VAL;
         }
         else {
             endIndex = i -1;
@@ -77,19 +73,6 @@ void printSameValueWords(char *sentence) {
 
 }
 
-int isChar(char c) {
-    if ((c >= 'A') & (c <='Z' )||( c>= 'a') &( c<='z')) {
-        return 1;
-    }
-    return 0;
-}
-
-char toUpper(char c) {
-    if (c >= 'a' && c <= 'z') {
-        return c - 'a' + 'A';
-    }
-    return c;
-}
 
 void getSentence(char *sentence) {
     char curChar = getchar();
@@ -104,8 +87,8 @@ void getSentence(char *sentence) {
 }
 
 void addToGimatricSum(char c) {
-    if (isChar(c)) {
-        gimatric_word_sum += toUpper(c) - GIMATRIC_START_VAL;
+    if (isalpha(c)) {
+        gimatric_word_sum += toupper(c) - GIMATRIC_START_VAL;
     }
 }
 
