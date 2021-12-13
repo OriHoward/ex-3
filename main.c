@@ -18,7 +18,7 @@ int checkChar(char c) {
 }
 
 int checkSentence(char c) {
-    if (c == '-') {
+    if (c == '~') {
         return 0;
     }
     return 1;
