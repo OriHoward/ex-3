@@ -37,8 +37,8 @@ void checkAllocation(void *p);
 
 int isEqual(char *noSpaceSentence, int wordLen);
 
-void checkAllocation(void *p){
-    if (p == NULL){
+void checkAllocation(void *p) {
+    if (p == NULL) {
         exit(1);
     }
 }
@@ -130,31 +130,35 @@ void printSameValueWords(char *sentence) {
     size_t len = strlen(sentence);
     char *wordToPrint = (char *) malloc((TXT * sizeof(char)));
     checkAllocation(wordToPrint);
-    int startIndex = 0;
-    int currSum = 0;
-    int i;
-    for (i = 0; i < len; ++i) {
+    int currSum = 0, startIndex = 0, sequencesFound = 0;
+    for (int i = 0; i < len; ++i) {
         char currChar = sentence[i];
+
         if (isalpha(currChar)) {
             currSum += toupper(currChar) - GIMATRIC_START_VAL;
         }
+        if (currSum > gimatric_word_sum) {
+            while (startIndex <= i && currSum > gimatric_word_sum) {
+                if (isalpha(sentence[startIndex])) {
+                    currSum -= toupper(sentence[startIndex]) - GIMATRIC_START_VAL;
+                }
+                startIndex++;
+            }
+        }
         if (currSum == gimatric_word_sum) {
-            strncpy(wordToPrint, sentence + startIndex, ((i + 1) - startIndex));
-            strcat(wordToPrint, &tilde);
-            printf("%s",wordToPrint);
+            while (!isalpha(sentence[startIndex]) && startIndex < i) {
+                startIndex++;
+            }
+            if (sequencesFound > 0) {
+                strcat(wordToPrint, &tilde);
+            }
+            strncat(wordToPrint, sentence + startIndex, (i + 1) - startIndex);
             currSum -= toupper(sentence[startIndex]) - GIMATRIC_START_VAL;
             startIndex++;
-            wordToPrint = (char *) realloc(wordToPrint, (TXT * sizeof(char)));
-            checkAllocation(wordToPrint);
-        } else if (currSum > gimatric_word_sum) {
-            currSum -= toupper(sentence[startIndex]) - GIMATRIC_START_VAL;
-            startIndex++;
+            sequencesFound++;
         }
     }
-    if (currSum == gimatric_word_sum) {
-        strncpy(wordToPrint, sentence + startIndex, ((i + 1) - startIndex));
-        puts(wordToPrint);
-    }
+    puts(wordToPrint);
     free(wordToPrint);
 
 }
