@@ -14,6 +14,7 @@ char sentenceInput[TXT];
 static char atbash[30];
 static char reverseAtbash[30];
 static int gimatric_word_sum = 0;
+static char tilde = '~';
 
 int checkChar(char c);
 
@@ -31,8 +32,16 @@ void reverseAtbashWord(char *atbash);
 
 void findSameAtbash();
 
+void checkAllocation(void *p);
+
 
 int isEqual(char *noSpaceSentence, int wordLen);
+
+void checkAllocation(void *p){
+    if (p == NULL){
+        exit(1);
+    }
+}
 
 int checkChar(char c) {
     if (c == '\t' || c == '\n' || c == ' ') {
@@ -120,24 +129,31 @@ int isEqual(char *sentence, int wordLen) {
 void printSameValueWords(char *sentence) {
     size_t len = strlen(sentence);
     char *wordToPrint = (char *) malloc((TXT * sizeof(char)));
+    checkAllocation(wordToPrint);
     int startIndex = 0;
     int currSum = 0;
-    for (int i = 0; i < len; ++i) {
+    int i;
+    for (i = 0; i < len; ++i) {
         char currChar = sentence[i];
         if (isalpha(currChar)) {
             currSum += toupper(currChar) - GIMATRIC_START_VAL;
         }
         if (currSum == gimatric_word_sum) {
-            strncpy(wordToPrint, sentence+startIndex, ((i+1)-startIndex));
-            puts(wordToPrint);
-            startIndex++;
+            strncpy(wordToPrint, sentence + startIndex, ((i + 1) - startIndex));
+            strcat(wordToPrint, &tilde);
+            printf("%s",wordToPrint);
             currSum -= toupper(sentence[startIndex]) - GIMATRIC_START_VAL;
+            startIndex++;
             wordToPrint = (char *) realloc(wordToPrint, (TXT * sizeof(char)));
-        }
-        if (currSum > gimatric_word_sum) {
+            checkAllocation(wordToPrint);
+        } else if (currSum > gimatric_word_sum) {
             currSum -= toupper(sentence[startIndex]) - GIMATRIC_START_VAL;
             startIndex++;
         }
+    }
+    if (currSum == gimatric_word_sum) {
+        strncpy(wordToPrint, sentence + startIndex, ((i + 1) - startIndex));
+        puts(wordToPrint);
     }
     free(wordToPrint);
 
