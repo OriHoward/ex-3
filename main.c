@@ -35,7 +35,7 @@ void findSameAtbash();
 void checkAllocation(void *p);
 
 
-int isEqual(char *noSpaceSentence, int wordLen);
+void isEqual(char *noSpaceSentence, int wordLen, int indexToSkip);
 
 void checkAllocation(void *p) {
     if (p == NULL) {
@@ -89,42 +89,53 @@ void reverseAtbashWord(char *atbashWord) {
 void findSameAtbash() {
     int len = strlen(sentenceInput);
     int wordLen = strlen(atbash);
+    int indexToSkip = 0;
     for (int i = 0; i <= len - wordLen; ++i) {
-        int ans = isEqual(sentenceInput + i, wordLen);
-        if (ans == 1) {
-            printf("%s", atbash);
-        }
-        if (ans == 2) {
-            printf("%s", reverseAtbash);
-        }
+        isEqual(sentenceInput +  i + indexToSkip, wordLen,indexToSkip);
     }
 }
 
-int isEqual(char *sentence, int wordLen) {
-    int regularCount = 0;
-    int reverseCount = 0;
+void isEqual(char *sentence, int wordLen, int indexToSkip) {
+    int regularCounter = 0;
+    int reverseCounter = 0;
+    int i= 0;
     int j = 0;
-    for (int i = 0; i < wordLen; ++i) {
-        if (sentence[i] != ' ') {
-            if (atbash[j] == sentence[i]) {
-                regularCount++;
-                j++;
+    char *atbashPrint = (char *) malloc((TXT * sizeof(char)));
+    char *reversePrint = (char *) malloc((TXT * sizeof(char)));
+
+    while (i<wordLen) {
+        if (sentence[j] != ' ') {
+            if (atbash[i] == sentence[j]) {
+                regularCounter++;
+                atbashPrint[j] = sentence[j];
             }
-            if (reverseAtbash[j] == sentence[wordLen - i - 1]) {
-                reverseCount++;
-                j++;
+            if (reverseAtbash[i] == sentence[j]){
+                reverseCounter++;
+                reversePrint[j] = sentence[j];
             }
+            i++;
+            j++;
+        }
+        else {
+            atbashPrint[j] = ' ';
+            reversePrint[j] = ' ';
+            indexToSkip++;
+            j++;
         }
     }
-    if (regularCount == wordLen) {
-        return 1;
+    if (regularCounter == wordLen) {
+        printf("%s",atbashPrint);
+        printf(",");
     }
-    if (reverseCount == wordLen) {
-        return 2;
+    if (reverseCounter == wordLen) {
+        printf("%s",reversePrint);
+        printf(",");
     }
-    return 0;
-}
+    free(atbashPrint);
+    free(reversePrint);
 
+
+}
 
 void printSameValueWords(char *sentence) {
     size_t len = strlen(sentence);
@@ -192,11 +203,12 @@ int main() {
 //    printf("%s", sentenceInput);
 //    printf("\n");
 //    printf("%d", gimatric_word_sum);
-    printf("same value: \n");
-    printSameValueWords(sentenceInput);
+//    printf("same value: \n");
+//    printSameValueWords(sentenceInput);
     printf("\n");
-//    printf("all atbash words: ");
-//    findSameAtbash();
+    printf("all atbash words: ");
+//    printf("%s",reverseAtbash);
+    findSameAtbash();
 //    printf("%s",atbash);
     return 1;
 }
