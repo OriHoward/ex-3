@@ -73,7 +73,7 @@ char convertToAtbash(char c) {
 void reverseAtbashWord(char *atbashWord) {
     int len = strlen(atbashWord);
     for (int i = 0; i < len; ++i) {
-        reverseAtbash[i] = atbashWord[len - i -1];
+        reverseAtbash[i] = atbashWord[len - i - 1];
     }
 }
 
@@ -101,7 +101,7 @@ int isEqual(char *sentence, int wordLen) {
                 regularCount++;
                 j++;
             }
-            if (reverseAtbash[j] == sentence[wordLen - i -1]) {
+            if (reverseAtbash[j] == sentence[wordLen - i - 1]) {
                 reverseCount++;
                 j++;
             }
@@ -119,26 +119,27 @@ int isEqual(char *sentence, int wordLen) {
 
 void printSameValueWords(char *sentence) {
     size_t len = strlen(sentence);
+    char *wordToPrint = (char *) malloc((TXT * sizeof(char)));
     int startIndex = 0;
-    int endIndex;
     int currSum = 0;
     for (int i = 0; i < len; ++i) {
         char currChar = sentence[i];
-        if (checkChar(currChar) && isalnum(currChar)) {
+        if (isalpha(currChar)) {
             currSum += toupper(currChar) - GIMATRIC_START_VAL;
-        } else {
-            endIndex = i - 1;
-            if (currSum == gimatric_word_sum) {
-                while (startIndex <= endIndex) {
-                    printf("%c", sentence[startIndex]);
-                    startIndex++;
-                }
-                printf(" ");
-            }
-            startIndex = i + 1;
-            currSum = 0;
+        }
+        if (currSum == gimatric_word_sum) {
+            strncpy(wordToPrint, sentence+startIndex, ((i+1)-startIndex));
+            puts(wordToPrint);
+            startIndex++;
+            currSum -= toupper(sentence[startIndex]) - GIMATRIC_START_VAL;
+            wordToPrint = (char *) realloc(wordToPrint, (TXT * sizeof(char)));
+        }
+        if (currSum > gimatric_word_sum) {
+            currSum -= toupper(sentence[startIndex]) - GIMATRIC_START_VAL;
+            startIndex++;
         }
     }
+    free(wordToPrint);
 
 }
 
@@ -171,11 +172,11 @@ int main() {
 //    printf("%s", sentenceInput);
 //    printf("\n");
 //    printf("%d", gimatric_word_sum);
-    printf("same value: ");
+    printf("same value: \n");
     printSameValueWords(sentenceInput);
     printf("\n");
-    printf("all atbash words: ");
-    findSameAtbash();
+//    printf("all atbash words: ");
+//    findSameAtbash();
 //    printf("%s",atbash);
     return 1;
 }
