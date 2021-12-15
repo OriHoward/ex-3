@@ -89,6 +89,7 @@ void findSameAtbash() {
     int len = strlen(sentenceInput);
     int wordLen = strlen(atbash);
     char *printPotentials = (char *) malloc((TXT * sizeof(char)));
+    checkAllocation(printPotentials);
     int printedWords = 0;
     for (int i = 0; i <= len - wordLen; ++i) {
         int spacesIndex = 0;
@@ -109,8 +110,9 @@ void isEqual(char *sentence, int wordLen, char *printPotentials, int *printedWor
     int i = 0;
     int j = 0;
     char *atbashPrint = (char *) calloc(TXT, sizeof(char));
+    checkAllocation(atbashPrint);
     char *reversePrint = (char *) calloc(TXT, sizeof(char));
-
+    checkAllocation(reversePrint);
     while (i < wordLen && j < strlen(sentence)) {
         if (isalpha(sentence[j])) {
             if (atbash[i] == sentence[j]) {
