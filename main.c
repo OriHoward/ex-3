@@ -235,7 +235,7 @@ void printSameLetterSequence(char *sentence) {
     int sentenceLen = strlen(sentence);
     int currSequence[256] = {0};
     int wordStart = -1, sequencesFound = 0;
-    char *wordToPrint = (char *) calloc(TXT,sizeof(char));
+    char *wordToPrint = (char *) calloc(TXT, sizeof(char));
     checkAllocation(wordToPrint);
 
     for (int i = 0; i < sentenceLen; ++i) {
@@ -244,9 +244,14 @@ void printSameLetterSequence(char *sentence) {
             while (isspace(sentence[wordStart])) {
                 wordStart++;
             }
-            if (currSequence[(int) curChar] == inputLetterCount[(int) curChar] && inputLetterCount[(int) curChar] > 0) {
-                currSequence[(int) sentence[wordStart]]--;
-                wordStart++;
+            if (currSequence[(int) curChar] == inputLetterCount[(int) curChar]) {
+                if (inputLetterCount[(int) curChar] > 0) {
+                    currSequence[(int) sentence[wordStart]]--;
+                    wordStart++;
+                } else if (inputLetterCount[(int) curChar] == 0 && !isspace(curChar)) {
+                    memset(currSequence, 0, sizeof(currSequence));
+                    wordStart = i + 1;
+                }
             }
             if (currSequence[(int) curChar] < inputLetterCount[(int) curChar]) {
                 currSequence[(int) curChar]++;
