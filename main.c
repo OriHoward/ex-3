@@ -141,23 +141,21 @@ void isEqual(char *sentence, int wordLen, char *printPotentials, int *printedWor
         }
     }
     if (regularCounter == wordLen) {
-        if (strstr(printPotentials, atbashPrint) == NULL) {
-            if ((*printedWords) > 0) {
-                strcat(printPotentials, &tilde);
-            }
-            *printedWords = *printedWords + 1;
-            strcat(printPotentials, atbashPrint);
+        if ((*printedWords) > 0) {
+            strcat(printPotentials, &tilde);
         }
+        *printedWords = *printedWords + 1;
+        strcat(printPotentials, atbashPrint);
+
 
     }
     if (reverseCounter == wordLen) {
-        if (strstr(printPotentials, reversePrint) == NULL) {
-            if ((*printedWords) > 0) {
-                strcat(printPotentials, &tilde);
-            }
-            *printedWords = *printedWords + 1;
-            strcat(printPotentials, reversePrint);
+        if ((*printedWords) > 0) {
+            strcat(printPotentials, &tilde);
         }
+        *printedWords = *printedWords + 1;
+        strcat(printPotentials, reversePrint);
+
     }
     free(atbashPrint);
     free(reversePrint);
