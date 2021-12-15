@@ -15,6 +15,7 @@ static char atbash[30];
 static char reverseAtbash[30];
 static int gimatric_word_sum = 0;
 static char tilde = '~';
+static char comma = ',';
 
 int checkChar(char c);
 
@@ -34,8 +35,7 @@ void findSameAtbash();
 
 void checkAllocation(void *p);
 
-
-void isEqual(char *noSpaceSentence, int wordLen, int indexToSkip);
+void isEqual(char *noSpaceSentence, int wordLen, char *printPotentials, int *printedWords);
 
 void checkAllocation(void *p) {
     if (p == NULL) {
@@ -89,53 +89,74 @@ void reverseAtbashWord(char *atbashWord) {
 void findSameAtbash() {
     int len = strlen(sentenceInput);
     int wordLen = strlen(atbash);
-    int indexToSkip = 0;
+    char *printPotentials = (char *) malloc((TXT * sizeof(char)));
+    int printedWords = 0;
     for (int i = 0; i <= len - wordLen; ++i) {
-        isEqual(sentenceInput +  i + indexToSkip, wordLen,indexToSkip);
+        int spacesIndex = 0;
+        while (isspace(sentenceInput[i + spacesIndex])) {
+            spacesIndex++;
+        }
+        i = i + spacesIndex;
+        isEqual(sentenceInput + i, wordLen, printPotentials, &printedWords);
     }
+    printf("%s", printPotentials);
 }
 
-void isEqual(char *sentence, int wordLen, int indexToSkip) {
+void isEqual(char *sentence, int wordLen, char *printPotentials, int *printedWords) {
     int regularCounter = 0;
     int reverseCounter = 0;
-    int i= 0;
+    int i = 0;
     int j = 0;
-    char *atbashPrint = (char *) malloc((TXT * sizeof(char)));
-    char *reversePrint = (char *) malloc((TXT * sizeof(char)));
+    char *atbashPrint = (char *) calloc(TXT, sizeof(char));
+    char *reversePrint = (char *) calloc(TXT, sizeof(char));
 
-    while (i<wordLen) {
-        if (sentence[j] != ' ') {
+    while (i < wordLen) {
+        if (isalpha(sentence[j])) {
             if (atbash[i] == sentence[j]) {
                 regularCounter++;
                 atbashPrint[j] = sentence[j];
             }
-            if (reverseAtbash[i] == sentence[j]){
+            if (reverseAtbash[i] == sentence[j]) {
                 reverseCounter++;
                 reversePrint[j] = sentence[j];
             }
             i++;
             j++;
-        }
-        else {
-            atbashPrint[j] = ' ';
-            reversePrint[j] = ' ';
-            indexToSkip++;
-            j++;
+        } else {
+            if (isspace(sentence[j])) {
+                if (regularCounter > 0) {
+                    atbashPrint[j] = ' ';
+                }
+                if (reverseCounter > 0) {
+                    reversePrint[j] = ' ';
+                }
+                j++;
+            }
         }
     }
     if (regularCounter == wordLen) {
-        printf("%s",atbashPrint);
-        printf(",");
+        if (strstr(printPotentials, atbashPrint) == NULL) {
+            if ((*printedWords) > 0) {
+                strcat(printPotentials, &comma);
+            }
+            *printedWords = *printedWords + 1;
+            strcat(printPotentials, atbashPrint);
+        }
+
     }
     if (reverseCounter == wordLen) {
-        printf("%s",reversePrint);
-        printf(",");
+        if (strstr(printPotentials, reversePrint) == NULL) {
+            if ((*printedWords) > 0) {
+                strcat(printPotentials, &comma);
+            }
+            *printedWords = *printedWords + 1;
+            strcat(printPotentials, reversePrint);
+        }
     }
     free(atbashPrint);
     free(reversePrint);
-
-
 }
+
 
 void printSameValueWords(char *sentence) {
     size_t len = strlen(sentence);
