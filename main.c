@@ -2,12 +2,11 @@
 #include <stdlib.h>
 #include "stdio.h"
 #include <ctype.h>
-#include <stdbool.h>
-
 
 #define TXT 1024
 #define WORD 30
 #define GIMATRIC_START_VAL 64
+const int ASCII_LEN = 256;
 char wordInput[WORD];
 char sentenceInput[TXT];
 
@@ -16,6 +15,7 @@ static char reverseAtbash[30];
 static int gimatric_word_sum = 0;
 static char tilde = '~';
 static char comma = ',';
+static int inputLetterCount[256] = {0};
 
 int checkChar(char c);
 
@@ -36,6 +36,8 @@ void findSameAtbash();
 void checkAllocation(void *p);
 
 void isEqual(char *noSpaceSentence, int wordLen, char *printPotentials, int *printedWords);
+
+void printSameLetterSequence(char *sentence);
 
 void checkAllocation(void *p) {
     if (p == NULL) {
@@ -58,17 +60,18 @@ int checkSentence(char c) {
 }
 
 void getWord(char *word) {
-    char curChar = getchar();
+    char curChar;
     for (int i = 0; i < WORD; ++i) {
+        curChar = getchar();
         if (checkChar(curChar)) {
             word[i] = curChar;
             addToGimatricSum(curChar);
             atbash[i] = convertToAtbash(curChar);
+            inputLetterCount[(int) curChar]++;
         } else {
             reverseAtbashWord(atbash);
             return;
         }
-        curChar = getchar();
     }
 }
 
@@ -214,6 +217,54 @@ void addToGimatricSum(char c) {
     }
 }
 
+int checkSequenceMatch(int currSequence[]);
+
+int checkSequenceMatch(int currSequence[]) {
+    for (int i = 0; i < ASCII_LEN; ++i) {
+        if (currSequence[i] != inputLetterCount[i]) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+void printSameLetterSequence(char *sentence) {
+    int sentenceLen = strlen(sentence);
+    int currSequence[256] = {0};
+    int wordStart = -1, sequencesFound = 0;
+    char *wordToPrint = (char *) malloc((TXT * sizeof(char)));
+    checkAllocation(wordToPrint);
+
+    for (int i = 0; i < sentenceLen; ++i) {
+        char curChar = sentence[i];
+        if (isascii(curChar)) {
+            while (isspace(sentence[wordStart])) {
+                wordStart++;
+            }
+            if (currSequence[(int) curChar] == inputLetterCount[(int) curChar] && inputLetterCount[(int) curChar] > 0) {
+                currSequence[(int) sentence[wordStart]]--;
+                wordStart++;
+            }
+            if (currSequence[(int) curChar] < inputLetterCount[(int) curChar]) {
+                currSequence[(int) curChar]++;
+                if (wordStart == -1) {
+                    wordStart = i;
+                }
+            }
+            if (checkSequenceMatch(currSequence) && !isspace(curChar)) {
+                if (sequencesFound > 0) {
+                    strcat(wordToPrint, &tilde);
+                }
+                strncat(wordToPrint, sentence + wordStart, (i + 1) - wordStart);
+                sequencesFound++;
+                currSequence[(int) sentence[wordStart]]--;
+                wordStart++;
+            }
+        }
+    }
+    puts(wordToPrint);
+    free(wordToPrint);
+}
 
 int main() {
     getWord(wordInput);
@@ -227,9 +278,11 @@ int main() {
 //    printf("same value: \n");
 //    printSameValueWords(sentenceInput);
     printf("\n");
-    printf("all atbash words: ");
+//    printf("all atbash words: ");
 //    printf("%s",reverseAtbash);
-    findSameAtbash();
+//    findSameAtbash();
 //    printf("%s",atbash);
-    return 1;
+    printf("all same letter sequences: ");
+    printSameLetterSequence(sentenceInput);
+    return 0;
 }
