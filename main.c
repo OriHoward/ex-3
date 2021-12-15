@@ -15,7 +15,6 @@ static char atbash[30];
 static char reverseAtbash[30];
 static int gimatric_word_sum = 0;
 static char tilde = '~';
-static char comma = ',';
 
 int checkChar(char c);
 
@@ -97,7 +96,9 @@ void findSameAtbash() {
             spacesIndex++;
         }
         i = i + spacesIndex;
-        isEqual(sentenceInput + i, wordLen, printPotentials, &printedWords);
+        if (i <= len - wordLen) {
+            isEqual(sentenceInput + i, wordLen, printPotentials, &printedWords);
+        }
     }
     printf("%s", printPotentials);
 }
@@ -110,7 +111,7 @@ void isEqual(char *sentence, int wordLen, char *printPotentials, int *printedWor
     char *atbashPrint = (char *) calloc(TXT, sizeof(char));
     char *reversePrint = (char *) calloc(TXT, sizeof(char));
 
-    while (i < wordLen) {
+    while (i < wordLen && j < strlen(sentence)) {
         if (isalpha(sentence[j])) {
             if (atbash[i] == sentence[j]) {
                 regularCounter++;
@@ -122,22 +123,22 @@ void isEqual(char *sentence, int wordLen, char *printPotentials, int *printedWor
             }
             i++;
             j++;
-        } else {
-            if (isspace(sentence[j])) {
-                if (regularCounter > 0) {
-                    atbashPrint[j] = ' ';
-                }
-                if (reverseCounter > 0) {
-                    reversePrint[j] = ' ';
-                }
-                j++;
+        } else if (isspace(sentence[j])) {
+            if (regularCounter > 0) {
+                atbashPrint[j] = ' ';
             }
+            if (reverseCounter > 0) {
+                reversePrint[j] = ' ';
+            }
+            j++;
+        } else {
+            j++;
         }
     }
     if (regularCounter == wordLen) {
         if (strstr(printPotentials, atbashPrint) == NULL) {
             if ((*printedWords) > 0) {
-                strcat(printPotentials, &comma);
+                strcat(printPotentials, &tilde);
             }
             *printedWords = *printedWords + 1;
             strcat(printPotentials, atbashPrint);
@@ -147,7 +148,7 @@ void isEqual(char *sentence, int wordLen, char *printPotentials, int *printedWor
     if (reverseCounter == wordLen) {
         if (strstr(printPotentials, reversePrint) == NULL) {
             if ((*printedWords) > 0) {
-                strcat(printPotentials, &comma);
+                strcat(printPotentials, &tilde);
             }
             *printedWords = *printedWords + 1;
             strcat(printPotentials, reversePrint);
