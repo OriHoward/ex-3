@@ -24,19 +24,19 @@ void getSentence(char *sentence);
 
 void addToGimatricSum(char c);
 
-void printSameValueWords(char *sentence);
-
 char convertToAtbash(char c);
 
 void reverseAtbashWord(char *atbash);
 
+void printSameValueWords(char*);
+
 void findSameAtbash();
 
+void printSameLetterSequence(char*);
 void checkAllocation(void *p);
 
 void isEqual(char *noSpaceSentence, int wordLen, char *printPotentials, int *printedWords);
 
-void printSameLetterSequence(char *sentence);
 
 void checkAllocation(void *p) {
     if (p == NULL) {
@@ -91,7 +91,7 @@ void reverseAtbashWord(char *atbashWord) {
 void findSameAtbash() {
     int len = strlen(sentenceInput);
     int wordLen = strlen(atbash);
-    char *printPotentials = (char *) calloc(TXT, sizeof(char));
+    char *printPotentials = (char *) malloc(TXT * sizeof(char));
     checkAllocation(printPotentials);
     int printedWords = 0;
     for (int i = 0; i <= len - wordLen; ++i) {
@@ -194,7 +194,7 @@ void printSameValueWords(char *sentence) {
             sequencesFound++;
         }
     }
-    puts(wordToPrint);
+    printf("%s", wordToPrint);
     free(wordToPrint);
 
 }
@@ -268,24 +268,20 @@ void printSameLetterSequence(char *sentence) {
             }
         }
     }
-    puts(wordToPrint);
+    printf("%s", wordToPrint);
     free(wordToPrint);
 }
 
 int main() {
     getWord(wordInput);
     getSentence(sentenceInput);
-//    printf("\n");
-//    printf("%s", wordInput);
-//    printf("\n");
-//    printf("%s", sentenceInput);
-    printf("same value: ");
+    printf("Gematria Sequences: ");
     printSameValueWords(sentenceInput);
     printf("\n");
-    printf("all atbash words: ");
+    printf("Atbash Sequences: ");
     findSameAtbash();
     printf("\n");
-    printf("all same letter sequences: ");
+    printf("Anagram Sequences: ");
     printSameLetterSequence(sentenceInput);
     return 0;
 }

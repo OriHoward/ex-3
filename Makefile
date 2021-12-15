@@ -2,14 +2,14 @@ CC = gcc
 AR = ar
 CFLAGS = -Wall -Werror
 
-all: connections
+all: stringProg
 
 
-connections: main.o
-	${CC} ${CFLAGS} -o connections main.o
+stringProg: main.o
+	${CC} ${CFLAGS} -o stringProg main.o
 
 main.o: main.c
 	${CC} ${CFLAGS} -c main.c
 
 clean:
-	rm -f *.a *.o connections
+	rm -f *.a *.o stringProg
