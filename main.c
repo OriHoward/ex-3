@@ -91,7 +91,7 @@ void reverseAtbashWord(char *atbashWord) {
 void findSameAtbash() {
     int len = strlen(sentenceInput);
     int wordLen = strlen(atbash);
-    char *printPotentials = (char *) malloc(TXT * sizeof(char));
+    char *printPotentials = (char *) calloc(TXT, sizeof(char));
     checkAllocation(printPotentials);
     int printedWords = 0;
     for (int i = 0; i <= len - wordLen; ++i) {
@@ -164,7 +164,7 @@ void isEqual(char *sentence, int wordLen, char *printPotentials, int *printedWor
 
 void printSameValueWords(char *sentence) {
     size_t len = strlen(sentence);
-    char *wordToPrint = (char *) malloc((TXT * sizeof(char)));
+    char *wordToPrint = (char *) calloc(TXT, sizeof(char));
     checkAllocation(wordToPrint);
     int currSum = 0, startIndex = 0, sequencesFound = 0;
     for (int i = 0; i < len; ++i) {
